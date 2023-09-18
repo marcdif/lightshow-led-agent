@@ -13,7 +13,7 @@ public class FullLightAction extends ShowAction {
 
     @Override
     public void run_impl() {
-        Main.getLightManager().getLightStrip().setAll(finalColor);
+        Main.getLightManager().getLedStage().setAll(finalColor);
         this.done = true;
     }
 

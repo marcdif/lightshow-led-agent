@@ -100,7 +100,7 @@ public class ShowThread extends Thread {
                 done.clear();
 
                 if (nextAction == null) {
-                    Main.getLightManager().getLightStrip().render();
+                    Main.getLightManager().getLedStage().getLightStrip().render();
                     // Stop show if there are no actions left
                     if (runningActions.isEmpty()) {
                         Main.logMessage("[WARN] No more actions left, stopping show!");
@@ -122,7 +122,7 @@ public class ShowThread extends Thread {
                     nextAction = nextAction.getNextAction();
                     // 5) Continue looping until the next action shouldn't start yet.
                 }
-                Main.getLightManager().getLightStrip().render();
+                Main.getLightManager().getLedStage().getLightStrip().render();
             }, 0, 10, TimeUnit.MILLISECONDS); // 100 times per second
 
             // while (true) {
@@ -198,6 +198,6 @@ public class ShowThread extends Thread {
         nextAction = null;
         if (runningActions != null)
             runningActions.clear();
-        Main.getLightManager().getLightStrip().clear();
+        Main.getLightManager().getLedStage().getLightStrip().clear();
     }
 }

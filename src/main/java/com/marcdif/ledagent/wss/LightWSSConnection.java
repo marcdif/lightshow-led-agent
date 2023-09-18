@@ -17,7 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class LightWSSConnection {
-    private static final String socketURL = "ws://home.marcdif.com:3926";
+    private static final String socketURL = "ws://syncserver.home.marcdif.com";
 //    private static final String socketURL = "ws://192.168.10.42:3926";
 
     //    private String clientId = null;

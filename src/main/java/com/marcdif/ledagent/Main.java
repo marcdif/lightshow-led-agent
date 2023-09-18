@@ -1,6 +1,7 @@
 package com.marcdif.ledagent;
 
 import com.marcdif.ledagent.lights.LightManager;
+import com.marcdif.ledagent.utils.ConfigUtil;
 import com.marcdif.ledagent.wss.LightWSSConnection;
 import com.marcdif.ledagent.wss.packets.BasePacket;
 import lombok.Getter;
@@ -8,11 +9,13 @@ import lombok.Getter;
 public class Main {
     @Getter private static LightManager lightManager;
     @Getter private static LightWSSConnection connection;
+    @Getter private static ConfigUtil configUtil;
 
     public static final boolean DEBUG = false, DEBUG_VERBOSE = false;
 
     public static void main(String[] args) throws Exception {
         logMessage("[INFO] Starting up at " + System.currentTimeMillis() + "...");
+        configUtil = new ConfigUtil();
         lightManager = new LightManager();
         connection = new LightWSSConnection();
     }

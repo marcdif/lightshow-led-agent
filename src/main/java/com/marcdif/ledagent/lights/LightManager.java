@@ -1,18 +1,24 @@
 package com.marcdif.ledagent.lights;
 
+import com.marcdif.ledagent.Main;
+import com.marcdif.ledagent.handlers.LEDStage;
 import com.marcdif.ledagent.handlers.LightStrip;
 import com.marcdif.ledagent.show.ShowManager;
-import com.marcdif.ledagent.utils.ConfigUtil;
 import lombok.Getter;
 
 public class LightManager {
     @Getter private final LightThread lightThread;
-    @Getter private final LightStrip lightStrip;
+    private final LightStrip lightStrip;
+    @Getter private final LEDStage ledStage;
     @Getter private final ShowManager showManager;
 
     public LightManager() {
-        lightStrip = new LightStrip(ConfigUtil.getPixelLocations());
+        ledStage = new LEDStage(Main.getConfigUtil().getPixelLocations());
+
+        lightStrip = new LightStrip(ledStage.getLedCount());
         lightStrip.clear();
+
+        ledStage.setLightStrip(lightStrip);
 
         lightThread = new LightThread(LightState.STARTUP, lightStrip);
         lightThread.start();

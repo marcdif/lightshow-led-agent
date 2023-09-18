@@ -26,11 +26,11 @@ public class FadeToAction extends ShowAction {
         if (firstRun) {
             this.startTime = now;
             this.firstRun = false;
-            this.starting = Main.getLightManager().getLightStrip().getFullStripColor();
+            this.starting = Main.getLightManager().getLedStage().getPixelColor(0);
             this.delta = ColorUtil.getColorDelta(this.color, this.starting);
         }
         double percent = (now - this.startTime) / this.duration;
-        Main.getLightManager().getLightStrip().setAll(ColorUtil.colorAdd(this.starting, ColorUtil.colorMult(this.delta, percent)));
+        Main.getLightManager().getLedStage().setAll(ColorUtil.colorAdd(this.starting, ColorUtil.colorMult(this.delta, percent)));
         if (now - this.startTime >= this.duration) {
             this.done = true;
         }
