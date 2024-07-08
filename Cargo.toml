@@ -1,0 +1,10 @@
+[package]
+name = "lightshow-led-agent"
+version = "0.1.0"
+edition = "2021"
+
+[target.arm-unknown-linux-gnueabihf]
+linker = "arm-linux-gnueabihf-gcc"
+
+[dependencies]
+rs_ws281x = { version = "0.5.1", path = "/home/marc/Documents/LightShow/rpi-ws281x-rust" }
