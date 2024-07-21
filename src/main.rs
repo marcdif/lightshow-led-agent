@@ -5,6 +5,7 @@ use crate::stage::Stage;
 
 mod stage;
 mod scheduler;
+mod utils;
 
 // LED strip configuration
 const LED_COUNT: i32 = 791;
@@ -46,14 +47,13 @@ fn main() {
 
     // controller.render().expect("Failed to render LEDs");
 
-    let stage: Stage = Stage::init([196, 393, 591, 789], [[0, 0, 0, 0]; 789]);
+    let mut stage: Stage = Stage::init([196, 393, 591, 789], [[0, 0, 0, 0]; 789]);
 
-    stage.get_wall(0);
-    stage.get_wall(1);
-    stage.get_wall(2);
-    stage.get_wall(3);
-    // Main loop to display rainbow cycle
-    // loop {
-    //     scheduler::start_scheduler(&mut controller.borrow_mut());
-    // }
+    // stage.get_wall(0);
+    // stage.get_wall(1);
+    // stage.get_wall(2);
+    // stage.get_wall(3);
+
+    // Main scheduler loop to render display
+    scheduler::start_scheduler(&mut controller.borrow_mut(), &mut stage);
 }

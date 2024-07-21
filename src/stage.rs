@@ -1,12 +1,30 @@
 #[derive(Clone)]
 pub struct Stage {
     corner_end_points: [u16; 4],
-    pixels: [[u8; 4]; 789]
+    pixels: [[u8; 4]; 789],
+    mode: Mode
+}
+
+#[derive(Clone, Copy)]
+pub enum Mode {
+    OFF,
+    WHITE,
+    RED,
+    ORANGE,
+    YELLOW,
+    GREEN,
+    BLUE,
+    PURPLE,
+    RAINBOW
 }
 
 impl Stage {
     pub fn init(corner_end_points: [u16; 4], pixels: [[u8; 4]; 789]) -> Self {
-        Self { corner_end_points, pixels }
+        Self { corner_end_points, pixels, mode: Mode::RAINBOW }
+    }
+
+    pub fn get_mode(&self) -> Mode {
+        self.mode
     }
 
     pub fn get_full_stage(&self) -> &[[u8; 4]] {
@@ -26,7 +44,7 @@ impl Stage {
             return Err("Invalid start and/or end index");
         }
         
-        println!("{}", format!("{} -> {}", start, end));
+        // println!("{}", format!("{} -> {}", start, end));
         let start_i: usize = start.try_into().unwrap();
         let end_i: usize = end.try_into().unwrap();
 
@@ -78,7 +96,7 @@ impl Stage {
                 .unwrap()
         };
 
-        println!("RUNNING {}", corner);
+        // println!("RUNNING {}", corner);
 
         return self.get_stage_subset(start, end);
     }
