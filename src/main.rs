@@ -1,18 +1,38 @@
 use rs_ws281x::{ChannelBuilder, ControllerBuilder, StripType};
 use std::borrow::BorrowMut;
 
+use clap::Parser;
+
 use crate::stage::Stage;
 
 mod scheduler;
 mod stage;
 mod utils;
 
-// LED strip configuration
-const LED_COUNT: i32 = 791;
-const LED_PIN: i32 = 18; // GPIO pin connected to data line
-const BRIGHTNESS: u8 = 255; // Set brightness (0 to 255)
+#[derive(Parser)]
+#[command(name = "agent")]
+#[command(about = "LED Controller Agent")]
+struct Cli {
+    #[arg(long, default_value = "791", help = "Count of LEDs in the system")]
+    led_count: i32,
+
+    #[arg(long, default_value = "18", help = "GPIO pin connected to data line")]
+    led_pin: i32,
+
+    #[arg(long, default_value = "255", help = "Brightness of the LEDs, from 0-255")]
+    brightness: u8
+}
 
 fn main() {
+    let args: Cli = Cli::parse();
+
+    let led_count = args.led_count;
+    let led_pin = args.led_pin;
+    let brightness = args.brightness;
+
+    // Create an LED Stage
+    let mut stage: Stage = Stage::init([196, 393, 591, 789], [[0, 0, 0, 0]; 789]);
+
     // Create a new controller
     let mut controller = ControllerBuilder::new()
         .freq(800_000)
@@ -20,10 +40,10 @@ fn main() {
         .channel(
             0,
             ChannelBuilder::new()
-                .pin(LED_PIN)
-                .count(LED_COUNT)
+                .pin(led_pin)
+                .count(led_count)
                 .strip_type(StripType::Ws2811Gbr)
-                .brightness(BRIGHTNESS)
+                .brightness(brightness)
                 .build(),
         )
         .build()
@@ -46,8 +66,6 @@ fn main() {
     // leds[789] = [0, 0, 255, 0]; // 198
 
     // controller.render().expect("Failed to render LEDs");
-
-    let mut stage: Stage = Stage::init([196, 393, 591, 789], [[0, 0, 0, 0]; 789]);
 
     // stage.get_wall(0);
     // stage.get_wall(1);
