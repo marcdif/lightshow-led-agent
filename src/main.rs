@@ -1,4 +1,4 @@
-use std::{borrow::BorrowMut, sync::Arc};
+use std::sync::Arc;
 
 use clap::Parser;
 
@@ -7,6 +7,7 @@ use crate::stage::Stage;
 mod scheduler;
 mod stage;
 mod utils;
+mod webserver;
 
 #[derive(Parser)]
 #[command(name = "agent")]
@@ -19,7 +20,10 @@ struct Cli {
     led_pin: i32,
 
     #[arg(long, default_value = "255", help = "Brightness of the LEDs, from 0-255")]
-    brightness: u8
+    brightness: u8,
+
+    #[arg(long, default_value = "8080", help = "HTTP web server port")]
+    http_port: u16,
 }
 
 #[tokio::main]
@@ -29,12 +33,14 @@ async fn main() {
     let led_count = args.led_count;
     let led_pin = args.led_pin;
     let brightness = args.brightness;
+    let http_port = args.http_port;
 
     println!("Initializing application...");
     println!("==================================================");
     println!("LED Count: {}", &led_count);
     println!("LED GPIO Pin: {}", &led_pin);
     println!("Brightness: {}", &brightness);
+    println!("HTTP Port: {}", &http_port);
     println!("==================================================");
 
     // Create an LED Stage
@@ -69,6 +75,9 @@ async fn main() {
     // Main scheduler loop to render display
     println!("Starting LED Controller Thread...");
     let controller_thread = tokio::spawn(scheduler::start_scheduler(Arc::clone(&stage), led_count, led_pin, brightness));
+
+    println!("Starting web server...");
+    let http = tokio::spawn(webserver::start_http_webserver(http_port, stage.clone()));
 
     let _ = tokio::join!(controller_thread);
 }
