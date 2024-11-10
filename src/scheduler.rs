@@ -77,12 +77,12 @@ pub async fn start_scheduler(stage: Arc<RwLock<Stage>>, led_count: i32, led_pin:
             },
             Mode::Orange => {
                 for led in leds.iter_mut() {
-                    *led = [255, 165, 0, 0];
+                    *led = [255, 30, 0, 0];
                 }
             },
             Mode::Yellow => {
                 for led in leds.iter_mut() {
-                    *led = [255, 255, 0, 0];
+                    *led = [255, 100, 0, 0];
                 }
             },
             Mode::Green => {
@@ -93,6 +93,11 @@ pub async fn start_scheduler(stage: Arc<RwLock<Stage>>, led_count: i32, led_pin:
             Mode::Blue => {
                 for led in leds.iter_mut() {
                     *led = [0, 0, 255, 0];
+                }
+            },
+            Mode::Pink => {
+                for led in leds.iter_mut() {
+                    *led = [255, 10, 40, 0];
                 }
             },
             Mode::Purple => {

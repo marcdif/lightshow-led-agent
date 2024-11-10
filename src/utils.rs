@@ -25,17 +25,17 @@ pub fn color_wheel_768(pos: u16) -> (u8, u8, u8) {
     
     if pos < 256 {
         // Red to Green
-        println!("R->G");
+        // println!("R->G");
         let pos: u8 = pos as u8;
         return (255 - pos, pos, 0);
     } else if pos < 512 {
         // Green to Blue
-        println!("G->B");
+        // println!("G->B");
         let pos: u8 = (pos - 256) as u8;
         return (0, 255 - pos, pos);
     } else {
         // Green to Blue
-        println!("G->B");
+        // println!("G->B");
         let pos: u8 = (pos - 512) as u8;
         return (pos, 0, 255 - pos);
     }

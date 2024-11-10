@@ -1,4 +1,4 @@
-use strum_macros::EnumString;
+use strum_macros::{Display, EnumIter, EnumString};
 
 #[derive(Clone)]
 pub struct Stage {
@@ -7,7 +7,7 @@ pub struct Stage {
     mode: Mode
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, EnumString)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, EnumString, EnumIter, Display)]
 pub enum Mode {
     #[strum(serialize = "off")]
     Off,
@@ -25,10 +25,62 @@ pub enum Mode {
     Green,
     #[strum(serialize = "blue")]
     Blue,
+    #[strum(serialize = "pink")]
+    Pink,
     #[strum(serialize = "purple")]
     Purple,
     #[strum(serialize = "rainbow")]
     Rainbow
+}
+
+impl Mode {
+    pub fn lower(&self) -> &'static str {
+        match self {
+            Mode::Off => "off",
+            Mode::TealWave => "tealwave",
+            Mode::White => "white",
+            Mode::Red => "red",
+            Mode::Orange => "orange",
+            Mode::Yellow => "yellow",
+            Mode::Green => "green",
+            Mode::Blue => "blue",
+            Mode::Pink => "pink",
+            Mode::Purple => "purple",
+            Mode::Rainbow => "rainbow",
+        }
+    }
+
+    pub fn css_button_color(&self) -> &'static str {
+        match self {
+            Mode::Off => "black",
+            Mode::TealWave => "teal",
+            Mode::White => "white",
+            Mode::Red => "red",
+            Mode::Orange => "orange",
+            Mode::Yellow => "yellow",
+            Mode::Green => "green",
+            Mode::Blue => "blue",
+            Mode::Pink => "hotpink",
+            Mode::Purple => "purple",
+            Mode::Rainbow => "white",
+        }
+    }
+
+    pub fn css_text_color(&self) -> &'static str {
+        match self {
+            Mode::Off => "aqua",
+            Mode::TealWave => "#800000",
+            Mode::White => "black",
+            Mode::Red => "#00ffff",
+            Mode::Orange => "#0059ff",
+            Mode::Yellow => "#0000ff",
+            Mode::Green => "#800080",
+            Mode::Blue => "#ffff00",
+            Mode::Pink => "#69ffb4",
+            Mode::Purple => "#008000",
+            Mode::Rainbow => "black",
+        }
+    }
 }
 
 impl Stage {
