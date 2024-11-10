@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::sync::{Arc, RwLock};
 
 use clap::Parser;
 
@@ -44,7 +44,7 @@ async fn main() {
     println!("==================================================");
 
     // Create an LED Stage
-    let stage: Arc<Stage> = Arc::new(Stage::init([196, 393, 591, 789], [[0, 0, 0, 0]; 789]));
+    let stage: Stage = Stage::init([196, 393, 591, 789], [[0, 0, 0, 0]; 789]);
 
     println!("Stage created with {} LEDs", stage.get_full_stage().len());
     println!("Stage started in '{:?}' mode", stage.get_mode());
@@ -72,12 +72,16 @@ async fn main() {
     // stage.get_wall(2);
     // stage.get_wall(3);
 
+    let shared_stage = Arc::new(RwLock::new(stage));
+    let stage_controller = Arc::clone(&shared_stage);
+    let stage_http = Arc::clone(&shared_stage);
+
     // Main scheduler loop to render display
     println!("Starting LED Controller Thread...");
-    let controller_thread = tokio::spawn(scheduler::start_scheduler(Arc::clone(&stage), led_count, led_pin, brightness));
+    let controller_thread = tokio::spawn(scheduler::start_scheduler(stage_controller, led_count, led_pin, brightness));
 
     println!("Starting web server...");
-    let http = tokio::spawn(webserver::start_http_webserver(http_port, stage.clone()));
+    let http = tokio::spawn(webserver::start_http_webserver(http_port, stage_http));
 
-    let _ = tokio::join!(controller_thread);
+    let _ = tokio::join!(controller_thread, http);
 }

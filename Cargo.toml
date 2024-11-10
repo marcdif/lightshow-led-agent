@@ -10,10 +10,13 @@ linker = "arm-linux-gnueabihf-gcc"
 rs_ws281x = { version = "0.5.1", path = "/home/marc/Documents/LightShow/rpi-ws281x-rust" }
 reqwest = { version = "0.11", features = ["blocking"] }
 hostname = "0.4"
-axum = { version = "0.7.5" }
+axum = { version = "0.7.5", features = ["json"] }
 tokio = { version = "1.38.0", features = ["rt-multi-thread"] }
 openssl = { version = "0.10", features = ["vendored"] }
 clap = { version = "4.5.20", features = ["derive"] }
 chrono = "0.4.38"
 axum-server = "0.7.1"
 lazy_static = "1.5.0"
+strum = "0.26.3"
+strum_macros = "0.26.4"
+serde = { version = "1.0.214", features = ["derive"] }

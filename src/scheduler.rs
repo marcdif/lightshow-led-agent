@@ -1,10 +1,10 @@
-use std::sync::Arc;
+use std::sync::{Arc, RwLock};
 
 use rs_ws281x::{ChannelBuilder, ControllerBuilder, StripType};
 
 use crate::{stage::{Mode, Stage}, utils};
 
-pub async fn start_scheduler(stage: Arc<Stage>, led_count: i32, led_pin: i32, brightness: u8) {
+pub async fn start_scheduler(stage: Arc<RwLock<Stage>>, led_count: i32, led_pin: i32, brightness: u8) {
     // Create a new controller
     let mut controller = ControllerBuilder::new()
         .freq(800_000)
@@ -22,24 +22,24 @@ pub async fn start_scheduler(stage: Arc<Stage>, led_count: i32, led_pin: i32, br
         .expect("Failed to create controller");
 
     let mut counter: u16 = 0;
-    let mut last_mode: Mode = Mode::OFF;
+    let mut last_mode: Mode = Mode::Off;
     loop {
         // thread::sleep(Duration::from_millis(500));
         counter = counter + 1;
-        if stage.get_mode() != last_mode {
+        if stage.read().unwrap().get_mode() != last_mode {
             counter = 0;
             println!("Resetting!");
-            last_mode = stage.get_mode();
+            last_mode = stage.read().unwrap().get_mode();
         }
         let leds = controller.leds_mut(0);
 
-        match stage.get_mode() {
-            Mode::OFF => {
+        match stage.read().unwrap().get_mode() {
+            Mode::Off => {
                 for led in leds.iter_mut() {
                     *led = [0, 0, 0, 0];
                 }
             },
-            Mode::TEAL_WAVE => {
+            Mode::TealWave => {
                 let wave_length: u16 = 158;
                 let color_r: f32 = 0.0;
                 let color_g: f32 = 80.0;
@@ -65,42 +65,42 @@ pub async fn start_scheduler(stage: Arc<Stage>, led_count: i32, led_pin: i32, br
                     }
                 }
             },
-            Mode::WHITE => {
+            Mode::White => {
                 for led in leds.iter_mut() {
                     *led = [255, 255, 255, 0];
                 }
             },
-            Mode::RED => {
+            Mode::Red => {
                 for led in leds.iter_mut() {
                     *led = [255, 0, 0, 0];
                 }
             },
-            Mode::ORANGE => {
+            Mode::Orange => {
                 for led in leds.iter_mut() {
                     *led = [255, 165, 0, 0];
                 }
             },
-            Mode::YELLOW => {
+            Mode::Yellow => {
                 for led in leds.iter_mut() {
                     *led = [255, 255, 0, 0];
                 }
             },
-            Mode::GREEN => {
+            Mode::Green => {
                 for led in leds.iter_mut() {
                     *led = [0, 255, 0, 0];
                 }
             },
-            Mode::BLUE => {
+            Mode::Blue => {
                 for led in leds.iter_mut() {
                     *led = [0, 0, 255, 0];
                 }
             },
-            Mode::PURPLE => {
+            Mode::Purple => {
                 for led in leds.iter_mut() {
                     *led = [128, 0, 128, 0];
                 }
             },
-            Mode::RAINBOW => {
+            Mode::Rainbow => {
                 let temp_color = utils::color_wheel_768(counter);
                 let color = (temp_color.0, (temp_color.1 / 2) as u8, (temp_color.2) as u8);
                 for led in leds.iter_mut() {
@@ -115,7 +115,7 @@ pub async fn start_scheduler(stage: Arc<Stage>, led_count: i32, led_pin: i32, br
         }
 
         // stage.set_full_stage([0, 0, 0]);
-        stage.get_full_stage();
+        // stage.get_full_stage();
 
         controller.render().expect("Failed to render LEDs");
     }
