@@ -1,8 +1,26 @@
-use rs_ws281x::Controller;
+use std::sync::Arc;
+
+use rs_ws281x::{ChannelBuilder, ControllerBuilder, StripType};
 
 use crate::{stage::{Mode, Stage}, utils};
 
-pub fn start_scheduler(controller: &mut Controller, stage: &mut Stage) {
+pub async fn start_scheduler(stage: Arc<Stage>, led_count: i32, led_pin: i32, brightness: u8) {
+    // Create a new controller
+    let mut controller = ControllerBuilder::new()
+        .freq(800_000)
+        .dma(10)
+        .channel(
+            0,
+            ChannelBuilder::new()
+                .pin(led_pin)
+                .count(led_count)
+                .strip_type(StripType::Ws2811Gbr)
+                .brightness(brightness)
+                .build(),
+        )
+        .build()
+        .expect("Failed to create controller");
+
     let mut counter: u16 = 0;
     let mut last_mode: Mode = Mode::OFF;
     loop {

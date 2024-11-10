@@ -1,5 +1,4 @@
-use rs_ws281x::{ChannelBuilder, ControllerBuilder, StripType};
-use std::borrow::BorrowMut;
+use std::{borrow::BorrowMut, sync::Arc};
 
 use clap::Parser;
 
@@ -23,7 +22,8 @@ struct Cli {
     brightness: u8
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let args: Cli = Cli::parse();
 
     let led_count = args.led_count;
@@ -38,26 +38,10 @@ fn main() {
     println!("==================================================");
 
     // Create an LED Stage
-    let mut stage: Stage = Stage::init([196, 393, 591, 789], [[0, 0, 0, 0]; 789]);
+    let stage: Arc<Stage> = Arc::new(Stage::init([196, 393, 591, 789], [[0, 0, 0, 0]; 789]));
 
     println!("Stage created with {} LEDs", stage.get_full_stage().len());
     println!("Stage started in '{:?}' mode", stage.get_mode());
-
-    // Create a new controller
-    let mut controller = ControllerBuilder::new()
-        .freq(800_000)
-        .dma(10)
-        .channel(
-            0,
-            ChannelBuilder::new()
-                .pin(led_pin)
-                .count(led_count)
-                .strip_type(StripType::Ws2811Gbr)
-                .brightness(brightness)
-                .build(),
-        )
-        .build()
-        .expect("Failed to create controller");
 
     println!("Started!");
 
@@ -83,5 +67,8 @@ fn main() {
     // stage.get_wall(3);
 
     // Main scheduler loop to render display
-    scheduler::start_scheduler(&mut controller.borrow_mut(), &mut stage);
+    println!("Starting LED Controller Thread...");
+    let controller_thread = tokio::spawn(scheduler::start_scheduler(Arc::clone(&stage), led_count, led_pin, brightness));
+
+    let _ = tokio::join!(controller_thread);
 }
