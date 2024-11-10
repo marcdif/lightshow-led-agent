@@ -30,8 +30,18 @@ fn main() {
     let led_pin = args.led_pin;
     let brightness = args.brightness;
 
+    println!("Initializing application...");
+    println!("==================================================");
+    println!("LED Count: {}", &led_count);
+    println!("LED GPIO Pin: {}", &led_pin);
+    println!("Brightness: {}", &brightness);
+    println!("==================================================");
+
     // Create an LED Stage
     let mut stage: Stage = Stage::init([196, 393, 591, 789], [[0, 0, 0, 0]; 789]);
+
+    println!("Stage created with {} LEDs", stage.get_full_stage().len());
+    println!("Stage started in '{:?}' mode", stage.get_mode());
 
     // Create a new controller
     let mut controller = ControllerBuilder::new()

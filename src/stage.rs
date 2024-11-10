@@ -5,7 +5,7 @@ pub struct Stage {
     mode: Mode
 }
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Mode {
     OFF,
     TEAL_WAVE,
