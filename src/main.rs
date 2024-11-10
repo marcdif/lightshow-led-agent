@@ -1,10 +1,10 @@
-use rs_ws281x::{ChannelBuilder, Controller, ControllerBuilder, StripType};
-use std::{borrow::BorrowMut, time::Instant};
+use rs_ws281x::{ChannelBuilder, ControllerBuilder, StripType};
+use std::borrow::BorrowMut;
 
 use crate::stage::Stage;
 
-mod stage;
 mod scheduler;
+mod stage;
 mod utils;
 
 // LED strip configuration

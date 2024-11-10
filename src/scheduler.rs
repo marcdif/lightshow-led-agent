@@ -3,14 +3,48 @@ use rs_ws281x::Controller;
 use crate::{stage::{Mode, Stage}, utils};
 
 pub fn start_scheduler(controller: &mut Controller, stage: &mut Stage) {
-    let mut rainbow_index: u16 = 0;
+    let mut counter: u16 = 0;
+    let mut last_mode: Mode = Mode::OFF;
     loop {
+        // thread::sleep(Duration::from_millis(500));
+        counter = counter + 1;
+        if stage.get_mode() != last_mode {
+            counter = 0;
+            println!("Resetting!");
+            last_mode = stage.get_mode();
+        }
         let leds = controller.leds_mut(0);
 
         match stage.get_mode() {
             Mode::OFF => {
                 for led in leds.iter_mut() {
                     *led = [0, 0, 0, 0];
+                }
+            },
+            Mode::TEAL_WAVE => {
+                let wave_length: u16 = 158;
+                let color_r: f32 = 0.0;
+                let color_g: f32 = 80.0;
+                let color_b: f32 = 80.0;
+
+                if counter >= wave_length {
+                    counter = 0;
+                }
+                let offset: usize = (counter % wave_length) as usize;
+                // println!("{} {}", counter, offset);
+                for i in 0..leds.len() {
+                    let i_u16: u16 = i as u16 % wave_length;
+                    if (i_u16 % wave_length) < (wave_length / 2) {
+                        // Increase from 0 to 128
+                        let fraction: f32 = i_u16 as f32 / (wave_length as f32 / 2.0);
+                        // i / (length / 2)
+                        leds[(i + offset) % 791] = [(color_r * fraction) as u8, (color_g * fraction) as u8, (color_b * fraction) as u8, 0];
+                    } else {
+                        // Decrease from 128 to 0
+                        let fraction: f32 = 1.0 - ((i_u16 - (wave_length / 2)) as f32 / (wave_length as f32 / 2.0));
+                        // 1 - ((i - (length / 2)) / (length / 2))
+                        leds[(i + offset) % 791] = [(color_r * fraction) as u8, (color_g * fraction) as u8, (color_b * fraction) as u8, 0];
+                    }
                 }
             },
             Mode::WHITE => {
@@ -49,16 +83,16 @@ pub fn start_scheduler(controller: &mut Controller, stage: &mut Stage) {
                 }
             },
             Mode::RAINBOW => {
-                let temp_color = utils::color_wheel_768(rainbow_index);
+                let temp_color = utils::color_wheel_768(counter);
                 let color = (temp_color.0, (temp_color.1 / 2) as u8, (temp_color.2) as u8);
                 for led in leds.iter_mut() {
                     *led = [color.0, color.1, color.2, 0];
                 }
-                rainbow_index += 2;
-                if rainbow_index > 768 {
-                    rainbow_index = 0;
+                counter += 2;
+                if counter > 768 {
+                    counter = 0;
                 }
-                println!("{}: R({}) G({}) B({})", rainbow_index, color.0, color.1, color.2);
+                // println!("{}: R({}) G({}) B({})", counter, color.0, color.1, color.2);
             },
         }
 

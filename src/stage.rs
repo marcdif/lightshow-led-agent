@@ -5,9 +5,10 @@ pub struct Stage {
     mode: Mode
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Mode {
     OFF,
+    TEAL_WAVE,
     WHITE,
     RED,
     ORANGE,
@@ -20,7 +21,7 @@ pub enum Mode {
 
 impl Stage {
     pub fn init(corner_end_points: [u16; 4], pixels: [[u8; 4]; 789]) -> Self {
-        Self { corner_end_points, pixels, mode: Mode::RAINBOW }
+        Self { corner_end_points, pixels, mode: Mode::TEAL_WAVE }
     }
 
     pub fn get_mode(&self) -> Mode {
