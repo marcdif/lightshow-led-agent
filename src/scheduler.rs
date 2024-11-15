@@ -31,6 +31,10 @@ pub async fn start_scheduler(stage: Arc<RwLock<Stage>>, led_count: i32, led_pin:
             println!("Resetting!");
             last_mode = stage.read().unwrap().get_mode();
         }
+        if stage.read().unwrap().get_brightness_update() {
+            controller.set_brightness(0, stage.read().unwrap().get_brightness());
+            stage.write().unwrap().brightness_update();
+        }
         let leds = controller.leds_mut(0);
 
         match stage.read().unwrap().get_mode() {

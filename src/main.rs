@@ -44,7 +44,7 @@ async fn main() {
     println!("==================================================");
 
     // Create an LED Stage
-    let stage: Stage = Stage::init([196, 393, 591, 789], [[0, 0, 0, 0]; 789]);
+    let stage: Stage = Stage::init([196, 393, 591, 789], [[0, 0, 0, 0]; 789], brightness);
 
     println!("Stage created with {} LEDs", stage.get_full_stage().len());
     println!("Stage started in '{:?}' mode", stage.get_mode());

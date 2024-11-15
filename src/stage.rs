@@ -4,7 +4,9 @@ use strum_macros::{Display, EnumIter, EnumString};
 pub struct Stage {
     corner_end_points: [u16; 4],
     pixels: [[u8; 4]; 789],
-    mode: Mode
+    mode: Mode,
+    brightness: u8,
+    brightness_update: bool
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, EnumString, EnumIter, Display)]
@@ -84,8 +86,8 @@ impl Mode {
 }
 
 impl Stage {
-    pub fn init(corner_end_points: [u16; 4], pixels: [[u8; 4]; 789]) -> Self {
-        Self { corner_end_points, pixels, mode: Mode::TealWave }
+    pub fn init(corner_end_points: [u16; 4], pixels: [[u8; 4]; 789], brightness: u8) -> Self {
+        Self { corner_end_points, pixels, mode: Mode::TealWave, brightness, brightness_update: false }
     }
 
     pub fn get_mode(&self) -> Mode {
@@ -94,6 +96,23 @@ impl Stage {
 
     pub fn get_full_stage(&self) -> &[[u8; 4]] {
         &self.pixels
+    }
+
+    pub fn get_brightness(&self) -> u8 {
+        self.brightness
+    }
+
+    pub fn get_brightness_update(&self) -> bool {
+        self.brightness_update
+    }
+
+    pub fn brightness_update(&mut self) -> bool {
+        if self.brightness_update {
+            self.brightness_update = false;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // pub fn get_stage_subset(&self, mut start: i16, mut end: i16) -> Result<Vec<[u8; 4]>, &str> {
@@ -168,6 +187,11 @@ impl Stage {
 
     pub fn set_mode(&mut self, mode: Mode) {
         self.mode = mode;
+    }
+
+    pub fn set_brightness(&mut self, brightness: u8) {
+        self.brightness = brightness;
+        self.brightness_update = true;
     }
 }
 
